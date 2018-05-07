@@ -1,0 +1,20 @@
+{
+    "name": "mimbre/db",
+    "description": "A database interface.",
+    "type": "php-library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gonzalo Chumillas",
+            "email": "gchumillas@email.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "mimbre\\": "src/"
+        }
+    }
+}
