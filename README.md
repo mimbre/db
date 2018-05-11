@@ -11,6 +11,8 @@ composer require mimbre\db
 ```
 ## Examples
 
+This library uses the [Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) design pattern to insert, update or delete records.
+
 ```php
 require_once "path/to/vendor/autoload.php";
 use mimbre\db\DbActiveRecord;
@@ -25,9 +27,13 @@ $row->title = 'A title';
 $row->save();
 
 // updates the previous record
-$row = new DbActiveRecord($db, "items", "2");
+$row = new DbActiveRecord($db, "items", $row->getId());
 $row->title = 'Another title';
 $row->save();
+
+// deletes the previous record
+$row = new DbActiveRecord($db, "items, $row->getId());
+$row->delete();
 ```
 
 ## Developer notes
