@@ -1,6 +1,6 @@
 # Database interface.
 
-A database interface.
+A database interface. This library is used in combination with other libraries, such as [db-mysql](https://github.com/mimbre/db-mysql).
 
 ## Install
 
@@ -9,6 +9,7 @@ This library uses the [Composer package manager](https://getcomposer.org/). Simp
 ```bash
 composer require mimbre\db
 ```
+
 ## Examples
 
 This library uses the [Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) design pattern to insert, update or delete records.
@@ -19,7 +20,7 @@ use mimbre\db\DbActiveRecord;
 use mimbre\db\mysql\MySqlConnection;
 
 // connects to a MySQL database
-$db = new MySqlConnection("test", "root", "chum11145");
+$db = new MySqlConnection("test", "root", "your password");
 
 // inserts a record
 $row = new DbActiveRecord($db, "my-table");
