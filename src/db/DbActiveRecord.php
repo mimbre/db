@@ -31,9 +31,7 @@ class DbActiveRecord extends DbRecord
     $sql = "show columns from " . Db::quoteId($this->_tableName);
     $cols = $db->query($sql);
     foreach ($cols as $col) {
-      if ($col["Field"] != "id") {
-        $this->_cols[$col["Field"]] = "";
-      }
+      $this->_cols[$col["Field"]] = "";
     }
 
     parent::__construct($db, $id);
@@ -50,7 +48,7 @@ class DbActiveRecord extends DbRecord
   {
     $field = $this->_camelToSnakeCase($colName);
 
-    return $field == "id" ? $this->id : $this->_cols[$field];
+    return $this->_cols[$field];
   }
 
   /**
@@ -85,7 +83,7 @@ class DbActiveRecord extends DbRecord
   /**
    * {@inheritdoc}
    *
-   * @return void
+   * @return string Record ID
    */
   protected function select()
   {
@@ -98,6 +96,8 @@ class DbActiveRecord extends DbRecord
     foreach ($colNames as $colName) {
       $this->_cols[$colName] = $colValues[$colName];
     }
+
+    return $this->_cols["id"];
   }
 
   /**

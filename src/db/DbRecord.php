@@ -21,7 +21,7 @@ abstract class DbRecord
     $this->_isSaved = ($id !== null);
 
     if ($this->_isSaved) {
-      $this->select();
+      $this->id = $this->select();
     }
   }
 
@@ -42,7 +42,7 @@ abstract class DbRecord
    */
   public function isFound()
   {
-    return !Text::isEmpty($this->id);
+    return strlen($this->id) > 0;
   }
 
   /**
@@ -70,7 +70,7 @@ abstract class DbRecord
   /**
    * Selects a record from a table.
    *
-   * @return void
+   * @return string Record ID
    */
   abstract protected function select();
 
