@@ -48,7 +48,7 @@ class DbActiveRecord extends DbRecord
   {
     $field = $this->_camelToSnakeCase($colName);
 
-    return $this->_cols[$field];
+    return $field == "id" ? $this->id : $this->_cols[$field];
   }
 
   /**
