@@ -13,13 +13,14 @@ abstract class DbConnection
    *
    *    // deletes a single record
    *    $count = $db->exec(
-   *        "delete from mytable where section = ?", ['mysection']
+   *        "delete from mytable where section = ?",
+   *        'mysection'
    *    );
    *
    *    echo "Number of affected rows: $count";
    *
-   * @param string  $sql       SQL statement
-   * @param mixed[] $arguments List of strings (not required)
+   * @param string        $sql       SQL statement
+   * @param mixed|mixed[] $arguments A single or a list of arguments
    *
    * @return int
    */
@@ -34,7 +35,7 @@ abstract class DbConnection
    *
    *    // selects a single row
    *    $row = $db->query(
-   *        "select id, title from my_table where id = ?", [101]
+   *        "select id, title from my_table where id = ?", 101
    *    );
    *
    *    // prints the record if it was found
@@ -42,10 +43,10 @@ abstract class DbConnection
    *        echo "Row ID: $row[id], title: $row[title]\n";
    *    }
    *
-   * @param string  $sql       SQL statement
-   * @param mixed[] $arguments List of arguments
+   * @param string        $sql       SQL statement
+   * @param mixed|mixed[] $arguments A single or a list of arguments
    *
-   * @return array|null
+   * @return mixed[]|null
    */
   abstract public function query($sql, $arguments = []);
 
@@ -59,8 +60,8 @@ abstract class DbConnection
    *        echo "Row ID: $row[id], title: $row[title]\n";
    *    }
    *
-   * @param string  $sql       SQL statement
-   * @param mixed[] $arguments List of arguments
+   * @param string        $sql       SQL statement
+   * @param mixed|mixed[] $arguments A single or a list of arguments
    *
    * @return array            [description]
    */
@@ -94,64 +95,75 @@ abstract class DbConnection
   /**
    * Replaces arguments in an SQL statement.
    *
-   * @param string  $sql       SQL statement
-   * @param mixed[] $arguments List of arguments
+   * For example:
+   *
+   *    // the following command returns:
+   *    //     select * from my_table where id = '100'
+   *    $db->replaceArgs("select * from my_table where id = ?", 100);
+   *
+   * @param string        $sql       SQL statement
+   * @param mixed|mixed[] $arguments A single or a list of arguments
    *
    * @return string
    */
   protected function replaceArgs($sql, $arguments)
   {
-      // searches string segments (startPos, endPos)
-      $stringSegments = [];
-      $matches = [];
-      $searchArgs = preg_match_all(
-        '/(["\'`])((?:\\\\\1|.)*?)\1/', $sql, $matches, PREG_OFFSET_CAPTURE
-      );
-      if ($searchArgs) {
-          foreach ($matches[2] as $match) {
-              $startPos = $match[1];
-              $endPos = $startPos + strlen($match[0]);
-              array_push($stringSegments, [$startPos, $endPos]);
-          }
-      }
+    // fixes arguments
+    if (!is_array($arguments)) {
+        $arguments = [$arguments];
+    }
 
-      // searches arguments position
-      $argsPos = [];
-      preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
-      foreach ($matches[0] as $match) {
-          array_push($argsPos, $match[1]);
-      }
+    // searches string segments (startPos, endPos)
+    $stringSegments = [];
+    $matches = [];
+    $searchArgs = preg_match_all(
+    '/(["\'`])((?:\\\\\1|.)*?)\1/', $sql, $matches, PREG_OFFSET_CAPTURE
+    );
+    if ($searchArgs) {
+        foreach ($matches[2] as $match) {
+          $startPos = $match[1];
+          $endPos = $startPos + strlen($match[0]);
+          array_push($stringSegments, [$startPos, $endPos]);
+        }
+    }
 
-      // replaces arguments
-      $matchCount = 0;
-      $argCount = 0;
-      return preg_replace_callback(
-          '/\?/',
-          function ($matches) use (
-              &$argCount, &$matchCount, $arguments, $argsPos, $stringSegments
-              ) {
-              $ret = $matches[0];
+    // searches arguments position
+    $argsPos = [];
+    preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
+    foreach ($matches[0] as $match) {
+        array_push($argsPos, $match[1]);
+    }
 
-              if ($argCount < count($arguments)) {
-                  // is the current match inside a quoted string?
-                  $argPos = $argsPos[$matchCount];
-                  $isInsideQuotedString = false;
-                  foreach ($stringSegments as $segment) {
-                      if ($argPos >= $segment[0] &&  $argPos < $segment[1]) {
-                          $isInsideQuotedString = true;
-                          break;
-                      }
-                  }
+    // replaces arguments
+    $matchCount = 0;
+    $argCount = 0;
+    return preg_replace_callback(
+        '/\?/',
+        function ($matches) use (
+          &$argCount, &$matchCount, $arguments, $argsPos, $stringSegments
+          ) {
+          $ret = $matches[0];
 
-                  if (!$isInsideQuotedString) {
-                      $ret = $this->quote($arguments[$argCount++]);
+          if ($argCount < count($arguments)) {
+              // is the current match inside a quoted string?
+              $argPos = $argsPos[$matchCount];
+              $isInsideQuotedString = false;
+              foreach ($stringSegments as $segment) {
+                  if ($argPos >= $segment[0] &&  $argPos < $segment[1]) {
+                      $isInsideQuotedString = true;
+                      break;
                   }
               }
 
-              $matchCount++;
-              return $ret;
-          },
-          $sql
-      );
+              if (!$isInsideQuotedString) {
+                  $ret = $this->quote($arguments[$argCount++]);
+              }
+          }
+
+          $matchCount++;
+          return $ret;
+        },
+        $sql
+    );
   }
 }
