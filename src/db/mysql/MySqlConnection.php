@@ -12,7 +12,7 @@ class MySqlConnection extends DbConnection
 {
     /**
      * Database connection.
-     * 
+     *
      * @var Mysqli
      */
     private $_conn;
@@ -65,16 +65,17 @@ class MySqlConnection extends DbConnection
     /**
      * {@inheritdoc}
      *
-     * @param string  $sql       SQL statement
-     * @param mixed[] $arguments Arguments
+     * @param string  $sql        SQL statement
+     * @param mixed[] $arguments  Arguments
+     * @param int     $resultType Result type
      *
      * @return mixed[]
      */
-    public function query($sql, $arguments = [])
+    public function query($sql, $arguments = [], $resultType = MYSQLI_ASSOC)
     {
         $ret = null;
 
-        $rows = $this->queryAll($sql, $arguments);
+        $rows = $this->queryAll($sql, $arguments, $resultType);
         if (count($rows) > 0) {
             $ret = $rows[0];
         }
@@ -85,18 +86,19 @@ class MySqlConnection extends DbConnection
     /**
      * {@inheritdoc}
      *
-     * @param string  $sql       SQL statement
-     * @param mixed[] $arguments Arguments
+     * @param string  $sql        SQL statement
+     * @param mixed[] $arguments  Arguments (not required)
+     * @param int     $resultType Result type
      *
      * @return array
      */
-    public function queryAll($sql, $arguments = [])
+    public function queryAll($sql, $arguments = [], $resultType = MYSQLI_ASSOC)
     {
         $ret = array();
         $result = $this->_exec($sql, $arguments);
 
         // fetches all rows
-        while ($row = $result->fetch_array()) {
+        while ($row = $result->fetch_array($resultType)) {
             array_push($ret, $row);
         }
         $result->close();
