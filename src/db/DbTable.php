@@ -10,7 +10,9 @@ use movicon\db\DbConnection;
 class DbTable
 {
   /**
-   * Selects a record from a table. For example:
+   * Selects a record from a table.
+   *
+   * For example:
    *
    *   list(
    *     $username,

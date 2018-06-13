@@ -140,8 +140,8 @@ abstract class DbConnection
     return preg_replace_callback(
         '/\?/',
         function ($matches) use (
-          &$argCount, &$matchCount, $arguments, $argsPos, $stringSegments
-          ) {
+            &$argCount, &$matchCount, $arguments, $argsPos, $stringSegments
+        ) {
           $ret = $matches[0];
 
           if ($argCount < count($arguments)) {

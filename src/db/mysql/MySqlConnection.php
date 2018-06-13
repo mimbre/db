@@ -12,6 +12,7 @@ class MySqlConnection extends DbConnection
 {
     /**
      * Database connection.
+     * 
      * @var Mysqli
      */
     private $_conn;
