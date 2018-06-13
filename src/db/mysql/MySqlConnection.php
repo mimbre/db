@@ -1,13 +1,14 @@
 <?php
 namespace movicon\db\mysql;
 use \Mysqli;
+use movicon\db\Db;
 use movicon\db\DbConnection;
 use movicon\db\exception\DbException;
 
 /**
  * A MySQL connection.
  */
-class MySqlConnection implements DbConnection
+class MySqlConnection extends DbConnection
 {
     /**
      * Database connection.
@@ -136,7 +137,7 @@ class MySqlConnection implements DbConnection
      */
     private function _exec($sql, $arguments = array())
     {
-        $sql = $this->_replaceArguments($sql, $arguments);
+        $sql = $this->replaceArgs($sql, $arguments);
 
         // executes the statement
         $result = $this->_conn->query($sql);
@@ -148,69 +149,5 @@ class MySqlConnection implements DbConnection
         }
 
         return $result;
-    }
-
-    /**
-     * Replaces arguments in an SQL statement.
-     *
-     * @param string  $sql       SQL statement
-     * @param mixed[] $arguments List of arguments
-     *
-     * @return string
-     */
-    private function _replaceArguments($sql, $arguments)
-    {
-        // searches string segments (startPos, endPos)
-        $stringSegments = [];
-        $matches = [];
-        $searchArgs = preg_match_all(
-          '/(["\'`])((?:\\\\\1|.)*?)\1/', $sql, $matches, PREG_OFFSET_CAPTURE
-        );
-        if ($searchArgs) {
-            foreach ($matches[2] as $match) {
-                $startPos = $match[1];
-                $endPos = $startPos + strlen($match[0]);
-                array_push($stringSegments, [$startPos, $endPos]);
-            }
-        }
-
-        // searches arguments position
-        $argsPos = [];
-        preg_match_all('/\?/', $sql, $matches, PREG_OFFSET_CAPTURE);
-        foreach ($matches[0] as $match) {
-            array_push($argsPos, $match[1]);
-        }
-
-        // replaces arguments
-        $matchCount = 0;
-        $argCount = 0;
-        return preg_replace_callback(
-            '/\?/',
-            function ($matches) use (
-                &$argCount, &$matchCount, $arguments, $argsPos, $stringSegments
-                ) {
-                $ret = $matches[0];
-
-                if ($argCount < count($arguments)) {
-                    // is the current match inside a quoted string?
-                    $argPos = $argsPos[$matchCount];
-                    $isInsideQuotedString = false;
-                    foreach ($stringSegments as $segment) {
-                        if ($argPos >= $segment[0] &&  $argPos < $segment[1]) {
-                            $isInsideQuotedString = true;
-                            break;
-                        }
-                    }
-
-                    if (!$isInsideQuotedString) {
-                        $ret = $this->quote($arguments[$argCount++]);
-                    }
-                }
-
-                $matchCount++;
-                return $ret;
-            },
-            $sql
-        );
     }
 }
