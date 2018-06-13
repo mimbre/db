@@ -2,7 +2,6 @@
 namespace movicon\db\mysql;
 use \Mysqli;
 use movicon\db\DbConnection;
-use movicon\db\DbSource;
 use movicon\db\exception\DbException;
 
 /**
@@ -67,11 +66,17 @@ class MySqlConnection implements DbConnection
      * @param string  $sql       SQL statement
      * @param mixed[] $arguments Arguments
      *
-     * @return DbSource
+     * @return mixed[]
      */
     public function query($sql, $arguments = [])
     {
-        $ret = new DbSource($this, $sql, $arguments);
+        $ret = null;
+
+        $rows = $this->queryAll($sql, $arguments);
+        if (count($rows) > 0) {
+            $ret = $rows[0];
+        }
+
         return $ret;
     }
 
@@ -79,11 +84,11 @@ class MySqlConnection implements DbConnection
      * {@inheritdoc}
      *
      * @param string  $sql       SQL statement
-     * @param mixed[] $arguments List of arguments (not required)
+     * @param mixed[] $arguments Arguments
      *
      * @return array
      */
-    public function fetchRows($sql, $arguments = [])
+    public function queryAll($sql, $arguments = [])
     {
         $ret = array();
         $result = $this->_exec($sql, $arguments);

@@ -22,7 +22,7 @@ class DbTable
    * @param string[]    $colNames  Column names
    * @param string      $id        Record ID
    *
-   * @return array
+   * @return mixed[]
    */
   public static function select($db, $tableName, $colNames, $id)
   {

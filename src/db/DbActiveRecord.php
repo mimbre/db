@@ -29,7 +29,7 @@ class DbActiveRecord extends DbRecord
     // gets the columns from the table
     $this->_cols = [];
     $sql = "show columns from " . Db::quoteId($this->_tableName);
-    $cols = $db->query($sql);
+    $cols = $db->queryAll($sql);
     foreach ($cols as $col) {
       $this->_cols[$col["Field"]] = "";
     }

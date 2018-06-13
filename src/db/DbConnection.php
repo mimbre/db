@@ -14,7 +14,11 @@ interface DbConnection
    *
    * Example:
    *
-   *    $count = $db->exec("delete from mytable where section = 'mysection'");
+   *    // deletes a single record
+   *    $count = $db->exec(
+   *        "delete from mytable where section = ?", ['mysection']
+   *    );
+   *    
    *    echo "Number of affected rows: $count";
    *
    * @param string  $sql       SQL statement
@@ -25,73 +29,65 @@ interface DbConnection
   function exec($sql, $arguments = []);
 
   /**
-   * Executes a SQL statement.
+   * Selects a single record.
    *
-   * This function executes a SQL statement (select, show, describe, etc...)
-   * and returns a datasource.
+   * Returns NULL if no records were found.
    *
-   * Examples:
+   * Example:
+   *
+   *    // selects a single row
+   *    $row = $db->query(
+   *        "select id, title from my_table where id = ?", [101]
+   *    );
+   *
+   *    // prints the record if it was found
+   *    if ($row !== null) {
+   *        echo "Row ID: $row[id], title: $row[title]\n";
+   *    }
+   *
+   * @param string  $sql       SQL statement
+   * @param mixed[] $arguments List of arguments
+   *
+   * @return array|null
+   */
+  function query($sql, $arguments = []);
+
+  /**
+   * Selects a list of records.
+   *
+   * Example:
    *
    *    $db = new DbConnection($dbname, $username, $password);
    *
-   *    // retrieves a single row
-   *    $row = $db->query("select count(*) from table");
-   *    echo $row[0];
-   *
-   *    // retrieves multiple rows
-   *    $rows = $db->query(
-   *      "select id, name from mytable where section = ?", ["my-section"]
-   *    );
+   *    $rows = $db->query("select id, title from my_table");
    *    foreach ($rows as $row) {
-   *      echo "$row[id]: $row[name]\n";
+   *        echo "Row ID: $row[id], title: $row[title]\n";
    *    }
    *
-   *    // uses an array as arguments
-   *    $rows = $db->query(
-   *      "select id, name from mytable where col1 = ? and col2 = ?",
-   *      [101, 102]
-   *    );
-   *    echo "Number of rows" . count($rows);
-   *
    * @param string  $sql       SQL statement
-   * @param mixed[] $arguments Arguments
+   * @param mixed[] $arguments List of arguments
    *
-   * @return DbSource
+   * @return array            [description]
    */
-  function query($sql, $arguments = []);
+  function queryAll($sql, $arguments = []);
 
   /**
    * Escapes and quotes a value.
    *
    * For example:
-   * ```php
-   * $rows = $db->query("select * from mytable where id = " . $db->quote($id));
-   * ```
    *
-   * In any case, is preferable to write the previous code as follows:
-   * ```php
-   * $rows = $db->query("select * from mytable where id = ?" . $id);
-   * ```
+   *    $rows = $db->query(
+   *        "select * from mytable where id = " . $db->quote($id)
+   *    );
+   *
+   *    // in any case, is preferable to write the previous code as follows:
+   *    $rows = $db->query("select * from mytable where id = ?" . $id);
    *
    * @param string|null $value Value
    *
    * @return string
    */
   function quote($value);
-
-  /**
-   * Executes a SQL statement and returns all rows.
-   *
-   * This function executes a SQL statement (select, show, describe, etc...)
-   * and returns an associative array. I recommend to use DbConnector::query()
-   * instead.
-   *
-   * @param string  $sql       SQL statement
-   * @param mixed[] $arguments List of arguments (not required)
-   *
-   * @return array
-   */
-  function fetchRows($sql, $arguments = []);
 
   /**
    * Closes the database connection.
