@@ -28,13 +28,13 @@ class DbTable
   {
     $cols = array_map(
       function ($colName) {
-        return Db::quoteId($colName);
+        return Db::quote($colName);
       },
       $colNames
     );
 
     $sql = "select " . implode($cols, ", ") .
-      " from " . Db::quoteId($tableName) . " where id = ?";
+      " from " . Db::quote($tableName) . " where id = ?";
     return $db->query($sql, [$id]);
   }
 
@@ -56,10 +56,10 @@ class DbTable
   {
     $columns = [];
     foreach ($cols as $name => $value) {
-      array_push($columns, Db::quoteId($name) . " = " . $db->quote($value));
+      array_push($columns, Db::quote($name) . " = " . $db->quote($value));
     }
 
-    $sql = "update " . Db::quoteId($tableName) .
+    $sql = "update " . Db::quote($tableName) .
       " set " . implode($columns, ",") . " where id = ?";
     $db->exec($sql, [$id]);
   }
@@ -82,11 +82,11 @@ class DbTable
     $colNames = [];
     $colValues = [];
     foreach ($cols as $name => $value) {
-      array_push($colNames, Db::quoteId($name));
+      array_push($colNames, Db::quote($name));
       array_push($colValues, $db->quote($value));
     }
 
-    $sql = "insert into " . Db::quoteId($tableName) .
+    $sql = "insert into " . Db::quote($tableName) .
       "( " . implode($colNames, ", ") . ")" .
       " values(" . implode($colValues, ", ") . ")";
     $db->exec($sql);
@@ -106,7 +106,7 @@ class DbTable
    */
   public static function delete($db, $tableName, $id)
   {
-    $sql = "delete from " . Db::quoteId($tableName) . " where id = ?";
+    $sql = "delete from " . Db::quote($tableName) . " where id = ?";
     $db->exec($sql, [$id]);
   }
 }

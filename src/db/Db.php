@@ -6,15 +6,23 @@ namespace movicon\db;
  */
 class Db
 {
-    // TODO: rename quoteId by quote
     /**
      * Quotes an identifier.
+     *
+     * For example:
+     *
+     *      $tableName = "my_table";
+     *      $sql = "select * from " . Db::quote($tableName);
+     *
+     *      // the following command prints:
+     *      //     select * from `my_table`
+     *      echo $sql;
      *
      * @param string $identifier Identifier
      *
      * @return string
      */
-    public static function quoteId($identifier)
+    public static function quote($identifier)
     {
         return "`" . str_replace("`", "``", $identifier) . "`";
     }
