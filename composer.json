@@ -1,5 +1,5 @@
 {
-    "name": "mimbre/db",
+    "name": "movicon/db",
     "description": "A database interface.",
     "type": "php-library",
     "license": "MIT",
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "mimbre\\": "src/"
+            "movicon\\": "src/"
         }
     }
 }

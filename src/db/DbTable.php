@@ -1,7 +1,7 @@
 <?php
-namespace mimbre\db;
-use mimbre\db\Db;
-use mimbre\db\DbConnection;
+namespace movicon\db;
+use movicon\db\Db;
+use movicon\db\DbConnection;
 
 /**
  * This is a 'helper class' that contains auxiliary functions to easily operate

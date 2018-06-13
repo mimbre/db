@@ -1,9 +1,9 @@
 <?php
-namespace mimbre\db\mysql;
+namespace movicon\db\mysql;
 use \Mysqli;
-use mimbre\db\DbConnection;
-use mimbre\db\DbSource;
-use mimbre\db\exception\DbException;
+use movicon\db\DbConnection;
+use movicon\db\DbSource;
+use movicon\db\exception\DbException;
 
 /**
  * A MySQL connection.

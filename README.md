@@ -1,13 +1,11 @@
-# Database interface.
-
-A database interface. This library is used in combination with other libraries, such as [db-mysql](https://github.com/mimbre/db-mysql).
+# Database connection
 
 ## Install
 
 This library uses the [Composer package manager](https://getcomposer.org/). Simply execute the following command from a terminal:
 
 ```bash
-composer require mimbre\db
+composer require movicon\movicon-db
 ```
 
 ## Examples
@@ -16,8 +14,8 @@ This library uses the [Active Record](https://en.wikipedia.org/wiki/Active_recor
 
 ```php
 require_once "path/to/vendor/autoload.php";
-use mimbre\db\DbActiveRecord;
-use mimbre\db\mysql\MySqlConnection;
+use movicon\db\DbActiveRecord;
+use movicon\db\mysql\MySqlConnection;
 
 // connects to a MySQL database
 $db = new MySqlConnection("test", "root", "your password");
@@ -35,11 +33,4 @@ $row->save();
 // deletes the previous record
 $row = new DbActiveRecord($db, "items, $row->getId());
 $row->delete();
-```
-
-## Developer notes
-
-```bash
-# verifies that the source code conforms the current coding standards
-phpcs --standard=phpcs.xml src
 ```

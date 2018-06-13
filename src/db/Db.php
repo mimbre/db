@@ -1,5 +1,5 @@
 <?php
-namespace mimbre\db;
+namespace movicon\db;
 
 /**
  * A database helper.

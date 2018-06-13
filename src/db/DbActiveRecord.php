@@ -1,11 +1,11 @@
 <?php
-namespace mimbre\db;
+namespace movicon\db;
 use \ArrayAccess;
-use mimbre\db\Db;
-use mimbre\db\DbConnection;
-use mimbre\db\DbRecord;
-use mimbre\db\DbTable;
-use mimbre\db\exception\DbException;
+use movicon\db\Db;
+use movicon\db\DbConnection;
+use movicon\db\DbRecord;
+use movicon\db\DbTable;
+use movicon\db\exception\DbException;
 
 /**
  * Active record implementation.

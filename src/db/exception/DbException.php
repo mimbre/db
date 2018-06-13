@@ -1,5 +1,5 @@
 <?php
-namespace mimbre\db\exception;
+namespace movicon\db\exception;
 use \Exception;
 
 /**

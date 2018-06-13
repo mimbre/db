@@ -1,6 +1,6 @@
 <?php
-namespace mimbre\db;
-use mimbre\db\DbConnection;
+namespace movicon\db;
+use movicon\db\DbConnection;
 
 abstract class DbRecord
 {
