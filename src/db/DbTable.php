@@ -93,8 +93,8 @@ class DbTable
           " values(" . implode($colValues, ", ") . ")";
         $db->exec($sql);
 
-        $row = $db->query("select last_insert_id()");
-        return $row[0];
+        $row = $db->query("select last_insert_id() as id");
+        return $row["id"];
     }
 
     /**
