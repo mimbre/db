@@ -61,6 +61,16 @@ abstract class DbRecord
     }
 
     /**
+     * Refreshes this record.
+     *
+     * @return void
+     */
+    public function refresh()
+    {
+        $this->id = $this->select();
+    }
+
+    /**
     * Deletes a record from a table.
     *
     * @return void
