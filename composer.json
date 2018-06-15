@@ -1,6 +1,6 @@
 {
     "name": "movicon/db",
-    "description": "A database interface.",
+    "description": "A database library",
     "type": "library",
     "license": "MIT",
     "authors": [
